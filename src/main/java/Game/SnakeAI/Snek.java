@@ -6,10 +6,15 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -89,7 +94,7 @@ class Player{
 		return false;
 	}
 }
-public class Snek extends JComponent implements Runnable, KeyListener, MouseListener{
+public class Snek extends JComponent implements Runnable, KeyListener, ActionListener{
 	private static final long serialVersionUID = 1L;
 	Snek(){
 		addKeyListener(this);
@@ -97,12 +102,13 @@ public class Snek extends JComponent implements Runnable, KeyListener, MouseList
 	}
 	static long startTime;
 	static JFrame frame = new JFrame("Single Player");
+	static JButton butt = new JButton("Foo");
 	static String bSize,difficulty;
 	static int size = 15, time =100;
 	Player p1 = new Player(size);
 	static Vector<Vector<Integer>> maze = new Vector<Vector<Integer>>();
 	boolean start = false, end = false;
-	boolean food = false;
+	boolean food = false,newGame=false;
 	int itr = 0,score=0;
 	int oldfoodx=0,oldfoody=0;
 	public static void main(String args[]) {
@@ -143,7 +149,13 @@ public class Snek extends JComponent implements Runnable, KeyListener, MouseList
 		frame.setBounds(0,0,1000,1000);
 		frame.getContentPane().add(new Snek());
 		frame.getContentPane().setBackground(Color.DARK_GRAY);
-		
+//		frame.add(butt);
+//		frame.addWindowFocusListener(new WindowAdapter() {
+//		    public void windowGainedFocus(WindowEvent e) {
+//		        butt.requestFocusInWindow();
+//		    }
+//		});
+//		frame.remove(butt);
 		frame.setVisible(true);
 	}
 	private static void Initialize() {
@@ -157,7 +169,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, MouseList
 	}
 	double board = 850;
 	double thick = board/size;
-	JButton butt = new JButton("Foo");
+	
 	public void paint(Graphics g)
 	{
 //		frame.getContentPane().transferFocus();
@@ -165,18 +177,6 @@ public class Snek extends JComponent implements Runnable, KeyListener, MouseList
 //		frame.transferFocus();
 //		frame.add(butt);//to draw focus here
 //		frame.remove(butt);
-		if(!start) {
-			p1.newSnek();
-			p1.newDir();
-			Initialize();
-			start = true;
-			startTime = System.nanoTime()/1000000000;
-		}
-		for(int i=0;i<size;i++) {
-			for(int j=0;j<size;j++) {
-				maze.get(i).set(j,0);
-			}
-		}
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.translate(frame.getWidth()/2-board/2, frame.getHeight()/2-board/2);		
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
@@ -187,18 +187,31 @@ public class Snek extends JComponent implements Runnable, KeyListener, MouseList
 		g2D.fill(new Rectangle2D.Double(0, 0, size*thick, size*thick));
 		g2D.setStroke(new BasicStroke(1f));
 		g2D.setColor(Color.BLACK);
-    	
+		for(int i=0;i<=size;i++)
+			g2D.draw(new Line2D.Double(0, i*thick, size*thick, i*thick));
+		for(int j=0;j<=size;j++)
+			g2D.draw(new Line2D.Double(j*thick, 0, j*thick, size*thick));
+		if(newGame) {
+		if(!start) {
+			startTime = System.nanoTime()/1000000000;
+			p1.newSnek();
+			p1.newDir();
+			Initialize();
+			start = true;
+		}
+		for(int i=0;i<size;i++) {
+			for(int j=0;j<size;j++) {
+				maze.get(i).set(j,0);
+			}
+		}
     	for(int i=p1.x.size()-1;i>0;i--) {
 			p1.x.set(i, p1.x.get(i-1));
 			p1.y.set(i, p1.y.get(i-1));
 		}
     	run();
     	p1.move();
+    	run();
     	boolean checkCollision = p1.checkCollision(food);
-		for(int i=0;i<=size;i++)
-			g2D.draw(new Line2D.Double(0, i*thick, size*thick, i*thick));
-		for(int j=0;j<=size;j++)
-			g2D.draw(new Line2D.Double(j*thick, 0, j*thick, size*thick));
 		//g2D.draw(new Rectangle2D.Double(0, 0, size*thick, size*thick));
 		for(int i=0;i<p1.x.size();i++)
 			maze.get(p1.y.get(i)).set(p1.x.get(i), 1);
@@ -207,11 +220,11 @@ public class Snek extends JComponent implements Runnable, KeyListener, MouseList
 		g2D.fill(new Rectangle2D.Double(p1.foodx*thick+thick/8.000,p1.foody*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
 		
 		for(int i=p1.x.size()-1;i>=0;i--) {
-			g2D.setColor(Color.getHSBColor((float) (45.900/360.000), (float) 1, (float) 1));
+			g2D.setColor(Color.getHSBColor((float) (45.900/360.000), (float) 1, (float) (i+1)/p1.x.size()));
 			if(i==0) g2D.setColor(Color.getHSBColor((float) (10.600/360.000), (float) 0.9, (float) 1));
 			g2D.fill(new Rectangle2D.Double(p1.x.get(i)*thick+thick/8.000,p1.y.get(i)*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
 		}
-		run();
+		//run();
 		maze.get(p1.foody).set(p1.foodx, 2);
 		//System.out.println(p1.foodx+","+p1.foody);
 		if(p1.x.get(0)==p1.foodx&&p1.y.get(0)==p1.foody) {
@@ -239,13 +252,19 @@ public class Snek extends JComponent implements Runnable, KeyListener, MouseList
 		g2D.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		g2D.setColor(Color.RED);
 		g2D.drawString("MODE: "+bSize+" , "+difficulty, 0,870 );
-		g2D.drawString("SCORE: "+score+", TIME:"+(System.nanoTime()/1000000000-startTime), 0,-10 );
+		g2D.drawString("SCORE: "+score+", TIME: "+(System.nanoTime()/1000000000-startTime)+"s", 0,-10 );
 		run();
 		if(!checkCollision) {
 			//System.out.println("Collision");
 			repaint();
 		}
+		else {
+			reset();
+			newGame=false;
+			repaint();
+		}
 		
+	} else repaint();
 	}
 	public void run() {
 		try {
@@ -277,28 +296,28 @@ public class Snek extends JComponent implements Runnable, KeyListener, MouseList
         		//run();
         	}
 		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-			maze.clear();
-			p1.x.clear();
-			p1.y.clear();
-
-			p1.newFood();
-			start = false;
-			end = false;
-			startTime = System.nanoTime()/1000000000;
+			reset();
 		}
+		if (e.getKeyCode()==KeyEvent.VK_SPACE) {
+			newGame = true;
+		}
+	}
+	private void reset() {
+		maze.clear();
+		p1.x.clear();
+		p1.y.clear();
+		p1.newFood();
+		start = false;
+		end = false;
+		score = 0;
+		startTime = System.nanoTime()/1000000000;
 	}
 	public void keyReleased(KeyEvent e) {
 	}
 	public void keyTyped(KeyEvent e) {
 	}
-	public void mouseClicked(MouseEvent arg0) {
-	}
-	public void mouseEntered(MouseEvent arg0) {
-	}
-	public void mouseExited(MouseEvent arg0) {
-	}
-	public void mousePressed(MouseEvent arg0) {
-	}
-	public void mouseReleased(MouseEvent arg0) {
+	public void actionPerformed(ActionEvent arg0) {
+//          for(Window window :Window.getWindows())
+//        	  window.toFront();
 	}	
 }
