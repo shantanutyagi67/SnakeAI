@@ -259,6 +259,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 			repaint();
 		}
 		else {
+			System.out.println("SCORE: "+score+", TIME: "+(System.nanoTime()/1000000000-startTime)+"s");
 			reset();
 			newGame=false;
 			repaint();
