@@ -78,6 +78,12 @@ class Player{
 	void direction(int dx, int dy) {
 		dirx = dx;
 		diry = dy;
+//		try {
+//			Thread.sleep(50);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	void newFood() {
 		foodx = (int) ((size)*Math.random());
@@ -107,10 +113,10 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 	static int size = 15, time =100;
 	Player p1 = new Player(size);
 	static Vector<Vector<Integer>> maze = new Vector<Vector<Integer>>();
-	boolean start = false, end = false;
-	boolean food = false,newGame=false;
+	boolean start = false, end = false, sleeping=false,checkCollision;
+	boolean food = false,newGame=false, paused=false;
 	int itr = 0,score=0;
-	int oldfoodx=0,oldfoody=0;
+	int oldfoodx=0,oldfoody=0,olddx,olddy;
 	public static void main(String args[]) {
 		Scanner sc = new Scanner(System.in);
 		do {
@@ -199,6 +205,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 			Initialize();
 			start = true;
 		}
+		if(!paused) {
 		for(int i=0;i<size;i++) {
 			for(int j=0;j<size;j++) {
 				maze.get(i).set(j,0);
@@ -211,19 +218,12 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
     	run();
     	p1.move();
     	run();
-    	boolean checkCollision = p1.checkCollision(food);
+    	checkCollision = p1.checkCollision(food);
 		//g2D.draw(new Rectangle2D.Double(0, 0, size*thick, size*thick));
 		for(int i=0;i<p1.x.size();i++)
 			maze.get(p1.y.get(i)).set(p1.x.get(i), 1);
 		//maze.get(p1.foody).set(p1.foodx, 2);
-		g2D.setColor(Color.getHSBColor((float) (340.000/360.000), (float) 1, (float) 0.8));
-		g2D.fill(new Rectangle2D.Double(p1.foodx*thick+thick/8.000,p1.foody*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
 		
-		for(int i=p1.x.size()-1;i>=0;i--) {
-			g2D.setColor(Color.getHSBColor((float) (45.900/360.000), (float)(i/2.00+p1.x.size()/2.00)/p1.x.size(), (float) 1));
-			if(i==0) g2D.setColor(Color.getHSBColor((float) (10.600/360.000), (float) 0.9, (float) 1));
-			g2D.fill(new Rectangle2D.Double(p1.x.get(i)*thick+thick/8.000,p1.y.get(i)*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
-		}
 		//run();
 		maze.get(p1.foody).set(p1.foodx, 2);
 		//System.out.println(p1.foodx+","+p1.foody);
@@ -249,6 +249,14 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 			food=false;
 			itr=0;
 		}
+		}
+		g2D.setColor(Color.getHSBColor((float) (340.000/360.000), (float) 1, (float) 0.8));
+		g2D.fill(new Rectangle2D.Double(p1.foodx*thick+thick/8.000,p1.foody*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
+		for(int i=p1.x.size()-1;i>=0;i--) {
+			g2D.setColor(Color.getHSBColor((float) (45.900/360.000), (float)(i/2.00+p1.x.size()/2.00)/p1.x.size(), (float) 1));
+			if(i==0) g2D.setColor(Color.getHSBColor((float) (10.600/360.000), (float) 0.9, (float) 1));
+			g2D.fill(new Rectangle2D.Double(p1.x.get(i)*thick+thick/8.000,p1.y.get(i)*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
+		}
 		g2D.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		g2D.setColor(Color.RED);
 		g2D.drawString("MODE: "+bSize+" , "+difficulty, 0,870 );
@@ -268,11 +276,13 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 	} else repaint();
 	}
 	public void run() {
+		sleeping = true;
 		try {
 			Thread.sleep((long) (time/3.000));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		sleeping = false;
 	}
 	public void keyPressed(KeyEvent e) {
 //		try {
@@ -280,6 +290,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 //		} catch (InterruptedException e1) {
 //			e1.printStackTrace();
 //		}
+		if(!sleeping) {
 			if (e.getKeyCode()==KeyEvent.VK_UP && p1.diry!=1) {
         		p1.direction(0, -1);
         		//run();
@@ -296,12 +307,25 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
         		p1.direction(-1, 0);
         		//run();
         	}
+		}
 		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 			reset();
 			newGame=false;
 		}
 		if (e.getKeyCode()==KeyEvent.VK_SPACE) {
 			newGame = true;
+		}
+		if (e.getKeyCode()==KeyEvent.VK_P) {
+			if(!paused) {
+				paused = true;
+				olddx = p1.dirx;
+				olddy = p1.diry;
+				p1.direction(0, 0);
+			}
+			else {
+				paused = false;
+				p1.direction(olddx,olddy);
+			}
 		}
 	}
 	private void reset() {
