@@ -113,38 +113,38 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 	int oldfoodx=0,oldfoody=0;
 	public static void main(String args[]) {
 		Scanner sc = new Scanner(System.in);
-//		do {
-//		System.out.print("Enter board size (small,medium,large): ");
-//		bSize = sc.nextLine().toLowerCase();
-//		if(bSize.equals("small")) {
-//			size =10;
-//			break;
-//		}
-//		else if(bSize.equals("medium")) {
-//			size =15;
-//			break;
-//		}
-//		else if(bSize.equals("large")) {
-//			size =20;
-//			break;
-//		}
-//		}while(true);
-//		do {
-//			System.out.print("Enter difficulty (easy,medium,hard): ");
-//			difficulty = sc.nextLine().toLowerCase();
-//			if(difficulty.equals("easy")) {
-//				time=200;
-//				break;
-//			}
-//			else if(difficulty.equals("medium")) {
-//				time=150;
-//				break;
-//			}
-//			else if(difficulty.equals("hard")) {
-//				time=100;
-//				break;
-//			}
-//			}while(true);
+		do {
+		System.out.print("Enter board size (small,medium,large): ");
+		bSize = sc.nextLine().toLowerCase();
+		if(bSize.equals("small")) {
+			size =10;
+			break;
+		}
+		else if(bSize.equals("medium")) {
+			size =15;
+			break;
+		}
+		else if(bSize.equals("large")) {
+			size =20;
+			break;
+		}
+		}while(true);
+		do {
+			System.out.print("Enter difficulty (easy,medium,hard): ");
+			difficulty = sc.nextLine().toLowerCase();
+			if(difficulty.equals("easy")) {
+				time=150;
+				break;
+			}
+			else if(difficulty.equals("medium")) {
+				time=100;
+				break;
+			}
+			else if(difficulty.equals("hard")) {
+				time=50;
+				break;
+			}
+			}while(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(0,0,1000,1000);
 		frame.getContentPane().add(new Snek());
@@ -220,7 +220,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 		g2D.fill(new Rectangle2D.Double(p1.foodx*thick+thick/8.000,p1.foody*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
 		
 		for(int i=p1.x.size()-1;i>=0;i--) {
-			g2D.setColor(Color.getHSBColor((float) (45.900/360.000), (float) 1, (float) (i+1)/p1.x.size()));
+			g2D.setColor(Color.getHSBColor((float) (45.900/360.000), (float)(i/2.00+p1.x.size()/2.00)/p1.x.size(), (float) 1));
 			if(i==0) g2D.setColor(Color.getHSBColor((float) (10.600/360.000), (float) 0.9, (float) 1));
 			g2D.fill(new Rectangle2D.Double(p1.x.get(i)*thick+thick/8.000,p1.y.get(i)*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
 		}
@@ -297,6 +297,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
         	}
 		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 			reset();
+			newGame=false;
 		}
 		if (e.getKeyCode()==KeyEvent.VK_SPACE) {
 			newGame = true;
