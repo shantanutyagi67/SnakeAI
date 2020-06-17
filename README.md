@@ -1,1 +1,11 @@
 # SnakeAI
+
+Steps:
+1. enter bame board size
+2. enter difficulty
+3. board appears
+4. hit space to start the game
+5. while playing the game, if you wish to reset the game, press enter and to start playing again, hit spacebar again
+6. you can pass through the walls
+7. score and time is displayed on the top and the game mode at the bottom
+8. if you die, the board reets and you need to hit spacebar again to restart the game.
