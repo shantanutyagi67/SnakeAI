@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -257,7 +258,8 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 		}
 		}
 		g2D.setColor(Color.getHSBColor((float) (340.000/360.000), (float) 1, (float) 0.8));
-		g2D.fill(new Rectangle2D.Double(p1.foodx*thick+thick/8.000,p1.foody*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
+		g2D.fill(new Ellipse2D.Double(p1.foodx*thick+thick/4.00,p1.foody*thick+thick/4.00,thick/2.00,thick/2.00));
+		//g2D.fill(new Rectangle2D.Double(p1.foodx*thick+thick/8.000,p1.foody*thick+thick/8.000,3*thick/4.000,3*thick/4.000));
 		for(int i=p1.x.size()-1;i>=0;i--) {
 			g2D.setColor(Color.getHSBColor((float) (45.900/360.000), (float)(i/2.00+p1.x.size()/2.00)/p1.x.size(), (float) 1));
 			if(i==0) g2D.setColor(Color.getHSBColor((float) (10.600/360.000), (float) 0.9, (float) 1));
@@ -266,7 +268,8 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 		g2D.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		g2D.setColor(Color.RED);
 		g2D.drawString("MODE: "+bSize+" , "+difficulty, 0,870 );
-		g2D.drawString("SCORE: "+score+", TIME: "+(System.nanoTime()/1000000000-startTime)+"s", 0,-10 );
+		long time = System.nanoTime()/1000000000-startTime;
+		g2D.drawString("SCORE: "+score+", TIME: "+ time/60+"m "+ time%60 + "s", 0,-10 );
 		run();
 		if(!checkCollision) {
 			//System.out.println("Collision");
@@ -274,7 +277,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 			repaint();
 		}
 		else {
-			System.out.println("SCORE: "+score+", TIME: "+(System.nanoTime()/1000000000-startTime)+"s");
+			System.out.println("SCORE: "+score+", TIME: "+time/60+"m "+time%60+"s");
 			reset();
 			newGame=false;
 			repaint();
