@@ -114,7 +114,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 	Player p1 = new Player(size);
 	static Vector<Vector<Integer>> maze = new Vector<Vector<Integer>>();
 	boolean start = false, end = false, sleeping=false,checkCollision;
-	boolean food = false,newGame=false, paused=false;
+	boolean food = false,newGame=false, paused=false,allowMove=true, skipMove=false;
 	int itr = 0,score=0;
 	int oldfoodx=0,oldfoody=0,olddx,olddy;
 	public static void main(String args[]) {
@@ -211,13 +211,19 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 				maze.get(i).set(j,0);
 			}
 		}
-    	for(int i=p1.x.size()-1;i>0;i--) {
-			p1.x.set(i, p1.x.get(i-1));
-			p1.y.set(i, p1.y.get(i-1));
-		}
-    	run();
-    	p1.move();
-    	run();
+    	
+    	//run();
+    	if(!skipMove) {
+    		for(int i=p1.x.size()-1;i>0;i--) {
+    			p1.x.set(i, p1.x.get(i-1));
+    			p1.y.set(i, p1.y.get(i-1));
+    		}
+    		p1.move(); 
+    	}
+    	//skipMove=false;
+		//skipMove=false;
+    	//allowMove=false;
+    	//run();
     	checkCollision = p1.checkCollision(food);
 		//g2D.draw(new Rectangle2D.Double(0, 0, size*thick, size*thick));
 		for(int i=0;i<p1.x.size();i++)
@@ -264,6 +270,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 		run();
 		if(!checkCollision) {
 			//System.out.println("Collision");
+			skipMove = false;
 			repaint();
 		}
 		else {
@@ -278,7 +285,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 	public void run() {
 		sleeping = true;
 		try {
-			Thread.sleep((long) (time/3.000));
+			Thread.sleep((long) (time));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -290,21 +297,57 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 //		} catch (InterruptedException e1) {
 //			e1.printStackTrace();
 //		}
-		if(!sleeping) {
-			if (e.getKeyCode()==KeyEvent.VK_UP && p1.diry!=1) {
+		if(!sleeping&&allowMove) {
+			if (e.getKeyCode()==KeyEvent.VK_UP && p1.diry!=1 && p1.diry!=-1) {
         		p1.direction(0, -1);
+        		if(!skipMove) {
+        			for(int i=p1.x.size()-1;i>0;i--) {
+            			p1.x.set(i, p1.x.get(i-1));
+            			p1.y.set(i, p1.y.get(i-1));
+            		}
+            		p1.move();
+            		skipMove=true;
+            		//repaint();
+            	}
         		//run();
         	}
-        	else if (e.getKeyCode()==KeyEvent.VK_DOWN && p1.diry!=-1) {
+        	else if (e.getKeyCode()==KeyEvent.VK_DOWN && p1.diry!=-1 && p1.diry!=1) {
         		p1.direction(0, 1);
+        		if(!skipMove) {
+        			for(int i=p1.x.size()-1;i>0;i--) {
+            			p1.x.set(i, p1.x.get(i-1));
+            			p1.y.set(i, p1.y.get(i-1));
+            		}
+            		p1.move();
+            		skipMove=true;
+            		//repaint();
+            	}
         		//run();
         	}
-        	else if (e.getKeyCode()==KeyEvent.VK_RIGHT && p1.dirx!=-1) {
+        	else if (e.getKeyCode()==KeyEvent.VK_RIGHT && p1.dirx!=-1 && p1.dirx!=1) {
         		p1.direction(1, 0);
+        		if(!skipMove) {
+        			for(int i=p1.x.size()-1;i>0;i--) {
+            			p1.x.set(i, p1.x.get(i-1));
+            			p1.y.set(i, p1.y.get(i-1));
+            		}
+            		p1.move();
+            		skipMove=true;
+            		//repaint();
+            	}
         		//run();
         	}
-        	else if (e.getKeyCode()==KeyEvent.VK_LEFT && p1.dirx!=1) {
+        	else if (e.getKeyCode()==KeyEvent.VK_LEFT && p1.dirx!=1 && p1.dirx!=-1) {
         		p1.direction(-1, 0);
+        		if(!skipMove) {
+        			for(int i=p1.x.size()-1;i>0;i--) {
+            			p1.x.set(i, p1.x.get(i-1));
+            			p1.y.set(i, p1.y.get(i-1));
+            		}
+            		p1.move();
+            		skipMove=true;
+            		//repaint();
+            	}
         		//run();
         	}
 		}
@@ -336,6 +379,9 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 		start = false;
 		end = false;
 		score = 0;
+		allowMove=true;
+		paused = false;
+		skipMove=false;
 		startTime = System.nanoTime()/1000000000;
 	}
 	public void keyReleased(KeyEvent e) {
