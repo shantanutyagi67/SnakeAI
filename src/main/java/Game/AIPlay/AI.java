@@ -32,8 +32,8 @@ class Player{
 	}
 	ArrayList<Integer> x = new ArrayList<Integer>();
 	ArrayList<Integer> y = new ArrayList<Integer>();
-	int dirx;
-	int diry;
+	Vector<Integer>dirx = new Vector<Integer>();
+	Vector<Integer>diry = new Vector<Integer>();
 	int size;
 	int foodx,foody;
 	void newSnek() {
@@ -41,34 +41,36 @@ class Player{
 		y.add((int)((size-10)*Math.random())+5);
 	}
 	void newDir() {
+		dirx.clear();
+		diry.clear();
 		double i =Math.random()%2;
 		double j =Math.random()%2;
 		if(i<0.5) {
-			diry = 0;
-			if(j<0.5) dirx = -1;
-			else dirx = 1;
+			diry.add(0);
+			if(j<0.5) dirx.add(-1);
+			else dirx.add(1);
 		}
 		else {
-			dirx=0;
-			if(j<0.5) diry = -1;
-			else diry = 1;
+			dirx.add(0);
+			if(j<0.5) diry.add(-1);
+			else diry.add(1);
 		}
 	}
-	void AImove() {
-		x.set(0,x.get(0)+dirx);
+	void AImove(int tmp) {
+		x.set(0,x.get(0)+dirx.get(0));
 		if(x.get(0)<0)
 			x.set(0, size-1);
 		else
 			x.set(0, x.get(0)%size);
-		y.set(0,y.get(0)+diry);
+		y.set(0,y.get(0)+diry.get(0));
 		if(y.get(0)<0)
 			y.set(0, size-1);
 		else
 			y.set(0, y.get(0)%size);
 	}
 	void direction(int dx, int dy) {
-		dirx = dx;
-		diry = dy;
+		dirx.add(dx);
+		diry.add(dy);
 	}
 	void newFood() {
 		foodx = (int) ((size)*Math.random());
@@ -83,62 +85,84 @@ class Player{
 		}
 		return false;
 	}
-	public void AIthink(Vector<Vector<Integer>> maze, Vector<Vector<Boolean>> visited, Vector<Point> stack, Point current, Vector<Vector<Vector<Point>>> padosi, int min, Vector<Point> path) { // ALGO USED: DFS
-		current.setLocation(x.get(0), y.get(0));
-		stack.add(current);
-		visited.get(current.y).set(current.x, true);
-//		System.out.println(stack);
-		while(!stack.isEmpty()) {
-			//System.out.println("works");
-			current.setLocation(stack.get(stack.size()-1).x, stack.get(stack.size()-1).y);
-			stack.remove(stack.size()-1);
+	public void AIthink(int min, Vector<Vector<Integer>> maze, Vector<Vector<Boolean>> visited, int currentCellI, int currentCellJ, Vector<Vector<Vector<Integer>>> padosiI,Vector<Vector<Vector<Integer>>> padosiJ,Vector<Integer> stackI, Vector<Integer> stackJ, Vector<Integer> pathI, Vector<Integer> pathJ, boolean think) { // ALGO USED: DFS
+//		for(int i=0;i<size;i++)
+//		System.out.println(maze.get(i));
+		currentCellI = y.get(0);
+		currentCellJ = x.get(0);
+		visited.get(currentCellI).set(currentCellJ,true);//set initial cell as visited
+		stackI.add(currentCellI);//add initial cell to stack
+		stackJ.add(currentCellJ);
+		while(!stackI.isEmpty()) {//loop till stack is empty
+			//pop stack and set the popped value to current cell
+			currentCellI=stackI.get(stackI.size()-1);//setting  current cell 
+			currentCellJ=stackJ.get(stackJ.size()-1);
+			//solved.get(currentCellI).set(currentCellJ,true);
+			stackI.remove(stackI.size()-1);//popping of stack
+			stackJ.remove(stackJ.size()-1);
 			int rand;
-			int cnt =padosi.get(current.y).get(current.x).size();
-			//System.out.println(cnt);
-			int cnt2=0;
+			int cnt =padosiI.get(currentCellI).get(currentCellJ).size();//total neighbours of current cell
+			int cnt2=0;//number of unvisited neighbours current cell has
 			while(cnt!=0) {
 				cnt--;
-				if(visited.get(padosi.get(current.y).get(current.x).get(cnt).y).get(padosi.get(current.y).get(current.x).get(cnt).x)==false) {
+				if(visited.get(padosiI.get(currentCellI).get(currentCellJ).get(cnt)).get(padosiJ.get(currentCellI).get(currentCellJ).get(cnt))==false) {
 					cnt2++;
 				}
 			}
-			//System.out.println(cnt2);
+			//if current cell has unvisited neighbours
 			if(cnt2>0) {
-				do {
-					rand = (new Random()).nextInt(padosi.get(current.y).get(current.x).size());
-				}while(visited.get(padosi.get(current.y).get(current.x).get(rand).y).get(padosi.get(current.y).get(current.x).get(rand).x)==true);
-				stack.add(current);
-				visited.get(padosi.get(current.y).get(current.x).get(rand).y).set(padosi.get(current.y).get(current.x).get(rand).x,true);
-				stack.add(padosi.get(current.y).get(current.x).get(rand));
-				//System.out.println(stack);
+				do {//find random unvisited neighbour of current cell and storing its index in rand variable
+					rand = (new Random()).nextInt(padosiI.get(currentCellI).get(currentCellJ).size());
+				}while(visited.get(padosiI.get(currentCellI).get(currentCellJ).get(rand)).get(padosiJ.get(currentCellI).get(currentCellJ).get(rand))==true);   
+				stackI.add(currentCellI);//push current cell to stack
+				stackJ.add(currentCellJ);
+				//Mark the chosen neighbour as visited and push it to the stack
+				visited.get(padosiI.get(currentCellI).get(currentCellJ).get(rand)).set(padosiJ.get(currentCellI).get(currentCellJ).get(rand),true);
+				stackI.add(padosiI.get(currentCellI).get(currentCellJ).get(rand));
+				stackJ.add(padosiJ.get(currentCellI).get(currentCellJ).get(rand));
+				//solved.get(padosiI.get(currentCellI).get(currentCellJ).get(rand)).set(padosiJ.get(currentCellI).get(currentCellJ).get(rand),true);
 			}
-			//System.out.println(current.x+","+current.y+":"+foodx+","+foody);
-			if(current.x==foodx&&current.y==foody&&stack.size()<min) {
-				min = stack.size();
-				path.clear();
-				path.addAll(stack);
-				path.add(new Point(foodx,foody));
-				System.out.println(path);
-				//System.out.println(path);
+//			else {
+//				solved.get(currentCellI).set(currentCellJ,false);
+//			}
+			//maze solving logic. solution is equal to the current stack values when we reach the destination node
+			//if we reach destination multiple times then select the shortest path by updating the solution list
+			if(currentCellI==foody&&currentCellJ==foodx&&stackI.size()<min) {
+//				System.out.println(foody+","+foodx);
+				min = stackI.size();
+				pathI.clear();
+				pathJ.clear();
+				pathI.addAll(stackI);
+				pathI.add(foody);
+				pathJ.addAll(stackJ);
+				pathJ.add(foodx);
+//				System.out.println(pathI);
+//				System.out.println(pathJ);
 			}
-		}//stack is empty now
-		//System.out.println(foodx+","+foody);
-		//AI will now make a decision
-//		int controlI = y.get(0) - path.get(0).y;
-//		int controlJ = x.get(0) - path.get(0).x;
-//		if(controlI==0 && controlJ==1) {//move right
-//			direction(1,0);
-//		}
-//		else if(controlI==0 && controlJ==-1) {//move left
-//			direction(-1,0);
-//		}
-//		else if(controlI==-1 && controlJ==0) {//move up
-//			direction(0,-1);
-//		}
-//		else if(controlI==1 && controlJ==0) {//move down
-//			direction(0,1);
-//		}
-	}//method over
+		}
+//		System.out.println(pathI);
+//		System.out.println(pathJ);
+		int controlI = y.get(0) - pathI.get(1);
+		if(controlI==9) controlI=1;
+		if(controlI==-9) controlI=-1;
+		int controlJ = x.get(0) - pathJ.get(1);
+		if(controlJ==9) controlJ=1;
+		if(controlJ==-9) controlJ=-1;
+		//System.out.println(controlI+","+controlJ);
+		if(controlI==0 && controlJ==1) {//move right
+			direction(1,0);
+		}
+		else if(controlI==0 && controlJ==-1) {//move left
+			direction(-1,0);
+		}
+		else if(controlI==-1 && controlJ==0) {//move up
+			direction(0,-1);
+		}
+		else if(controlI==1 && controlJ==0) {//move down
+			direction(0,1);
+		}
+		think=false;
+	}
 }//class over
 public class AI extends JComponent implements Runnable, KeyListener{
 	private static final long serialVersionUID = 1L;
@@ -153,16 +177,19 @@ public class AI extends JComponent implements Runnable, KeyListener{
 	static int size = 15, time =100;
 	Player p1 = new Player(size);
 	static Vector<Vector<Integer>> maze = new Vector<Vector<Integer>>();
-	boolean start = false, end = false, sleeping=false,checkCollision;
+	boolean start = false, end = false, sleeping=false,checkCollision,think=true;
 	boolean food = false,newGame=false, paused=false,allowMove=true, skipMove=false;
 	int itr = 0,score=0;
 	int oldfoodx=0,oldfoody=0,olddx,olddy;
+	static Vector<Vector<Vector<Integer>>> padosiI = new Vector<Vector<Vector<Integer>>>();
+	static Vector<Vector<Vector<Integer>>> padosiJ = new Vector<Vector<Vector<Integer>>>();
 	static Vector<Vector<Boolean>> visited = new Vector<Vector<Boolean>>();
-	static Vector<Point> stack = new Vector<Point>();
-	Point current = new Point();
-	static Vector<Vector<Vector<Point>>> padosi = new Vector<Vector<Vector<Point>>>();
-	static int min = Integer.MAX_VALUE;
-	static Vector<Point> path = new Vector<Point>();
+	static Vector<Integer> stackI = new Vector<Integer>();
+	static Vector<Integer> stackJ = new Vector<Integer>();
+	static Vector<Integer> pathI = new Vector<Integer>();
+	static Vector<Integer> pathJ = new Vector<Integer>();
+	static int currentCellI=0, currentCellJ=0;//select initial cell
+	static int min = Integer.MAX_VALUE,tmp=0;
 	public static void main(String args[]) {
 		Scanner sc = new Scanner(System.in);
 		do {
@@ -201,10 +228,12 @@ public class AI extends JComponent implements Runnable, KeyListener{
 				maze.get(i).add(0);
 			}
 		}
-		for(int i=0;i<size;i++) {//Neighbors of each cell (2-4 values depending on corner, edge, middle cell)
-			padosi.add(new Vector<Vector<Point>>());
+		for(int i=0;i<size;i++) {
+			padosiI.add(new Vector<Vector<Integer>>());
+			padosiJ.add(new Vector<Vector<Integer>>());
 			for(int j=0;j<size;j++) {
-				padosi.get(i).add(new Vector<Point>());
+				padosiI.get(i).add(new Vector<Integer>());
+				padosiJ.get(i).add(new Vector<Integer>());
 			}
 		}
 	}
@@ -243,14 +272,22 @@ public class AI extends JComponent implements Runnable, KeyListener{
 //			System.out.println(maze.get(i));
 		for(int i=0;i<size;i++) {
 			for(int j=0;j<size;j++) {
-				if(maze.get(i).get(j+1==size?0:j+1)%2==0)
-					padosi.get(i).get(j).add(new Point(i,j+1==size?0:j+1));
-				if(maze.get(i).get(j-1==-1?size-1:j-1)%2==0)
-					padosi.get(i).get(j).add(new Point(i,j-1==-1?size-1:j-1));
-				if(maze.get(i+1==size?0:i+1).get(j)%2==0)
-					padosi.get(i).get(j).add(new Point(i+1==size?0:i+1,j));
-				if(maze.get(i-1==-1?size-1:i-1).get(j)%2==0)
-					padosi.get(i).get(j).add(new Point(i-1==-1?size-1:i-1,j));
+				if(maze.get(i).get(j+1==size?0:j+1)%2==0) {
+					padosiJ.get(i).get(j).add(j+1==size?0:j+1);
+					padosiI.get(i).get(j).add(i);
+				}
+				if(maze.get(i).get(j-1==-1?size-1:j-1)%2==0) {
+					padosiJ.get(i).get(j).add(j-1==-1?size-1:j-1);
+					padosiI.get(i).get(j).add(i);
+				}
+				if(maze.get(i+1==size?0:i+1).get(j)%2==0) {
+					padosiI.get(i).get(j).add(i+1==size?0:i+1);
+					padosiJ.get(i).get(j).add(j);
+				}
+				if(maze.get(i-1==-1?size-1:i-1).get(j)%2==0) {
+					padosiI.get(i).get(j).add(i-1==-1?size-1:i-1);
+					padosiJ.get(i).get(j).add(j);
+				}
 			}
 		}
 //		for(int i=0;i<size;i++) {
@@ -263,8 +300,14 @@ public class AI extends JComponent implements Runnable, KeyListener{
     		p1.x.set(i, p1.x.get(i-1));
     		p1.y.set(i, p1.y.get(i-1));
     	}
-    	p1.AIthink(maze,visited,stack,current,padosi,min,path);
-    	p1.AImove(); 
+    	if(think) {
+    		p1.AIthink(min,maze,visited,currentCellI,currentCellJ,padosiI,padosiJ,stackI,stackJ,pathI,pathJ,think);
+    		//think=false;
+    	}
+    	//p1.AImove(tmp);
+    	p1.x.set(0, pathJ.elementAt(1));
+    	p1.y.set(0, pathI.elementAt(1));
+    	tmp++;
     	checkCollision = p1.checkCollision(food);
 		if(p1.x.get(0)==p1.foodx&&p1.y.get(0)==p1.foody) {
 			oldfoodx = p1.foodx;
@@ -275,6 +318,10 @@ public class AI extends JComponent implements Runnable, KeyListener{
 			score++;
 			food = true;
 			itr=0;
+			think=true;
+			tmp=0;
+			p1.dirx.clear();
+			p1.diry.clear();
 		}
 		if(food) {
 			itr++;
@@ -302,11 +349,12 @@ public class AI extends JComponent implements Runnable, KeyListener{
 			for(int j=0;j<size;j++) {
 				maze.get(i).set(j,0);
 				visited.get(i).set(j, false);
-				padosi.get(i).get(j).clear();
+				padosiI.get(i).get(j).clear();
+				padosiJ.get(i).get(j).clear();
 			}
 		}
-		stack.clear();
-		path.clear();
+		p1.dirx.clear();
+		p1.diry.clear();
 		run();
 		if(!checkCollision) {
 			repaint();
@@ -322,7 +370,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(500);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -338,8 +386,8 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		if (e.getKeyCode()==KeyEvent.VK_P) {
 			if(!paused) {
 				paused = true;
-				olddx = p1.dirx;
-				olddy = p1.diry;
+				olddx = p1.dirx.get(p1.dirx.size());
+				olddy = p1.diry.get(p1.diry.size());
 				p1.direction(0, 0);
 			}
 			else {
@@ -360,10 +408,13 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		paused = false;
 		skipMove=false;
 		visited.clear();
-		stack.clear();
-		padosi.clear();
+		stackI.clear();
+		padosiI.clear();
+		stackJ.clear();
+		padosiJ.clear();
 		min = Integer.MAX_VALUE;
-		path.clear();
+		pathI.clear();
+		pathJ.clear();
 		startTime = System.nanoTime()/1000000000;
 	}
 	public void keyReleased(KeyEvent e) {
