@@ -1,7 +1,7 @@
 # SnakeAI
 
 Steps:
-1. enter bame board size
+1. enter game board size
 2. enter difficulty
 3. board appears
 4. hit space to start the game
@@ -14,7 +14,6 @@ Steps:
 # for developers
 for shortest path DFS AI Algo:
 when snake length is 1, it disobeys direction rules so have to fix that or can initialize snake with length 2
-need to record score for each iteration in a txt, plot graph and analyze the data in MATLAB
 this path is not necessarily the least distance valid path between the head and food but the shortest path DFS could find.
 
 # next release
