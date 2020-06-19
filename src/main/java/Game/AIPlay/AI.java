@@ -302,11 +302,15 @@ public class AI extends JComponent implements Runnable, KeyListener{
     	}
     	if(think) {
     		p1.AIthink(min,maze,visited,currentCellI,currentCellJ,padosiI,padosiJ,stackI,stackJ,pathI,pathJ,think);
-    		//think=false;
+    		think=false;
+//    		System.out.println(pathI);
+//    		System.out.println(pathJ);
+//    		System.out.println(p1.y+","+p1.x);
+//    		System.out.println(p1.foody+","+p1.foodx);
     	}
     	//p1.AImove(tmp);
-    	p1.x.set(0, pathJ.elementAt(1));
-    	p1.y.set(0, pathI.elementAt(1));
+    	p1.x.set(0, pathJ.elementAt(tmp+1));
+    	p1.y.set(0, pathI.elementAt(tmp+1));
     	tmp++;
     	checkCollision = p1.checkCollision(food);
 		if(p1.x.get(0)==p1.foodx&&p1.y.get(0)==p1.foody) {
@@ -415,6 +419,10 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		min = Integer.MAX_VALUE;
 		pathI.clear();
 		pathJ.clear();
+		tmp=0;
+		think = true;
+		p1.dirx.clear();
+		p1.diry.clear();
 		startTime = System.nanoTime()/1000000000;
 	}
 	public void keyReleased(KeyEvent e) {

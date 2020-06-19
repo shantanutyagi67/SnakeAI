@@ -11,9 +11,8 @@ Steps:
 8. score and time is displayed on the top and the game mode at the bottom
 9. if you die, the board reets and you need to hit spacebar again to restart the game.
 
-note: snake is not allowed to move in a 180 degree direction but if you press the keyboard keys for any 90 degree direction and then 
-for 180 degree direction, the sanake will go in reverse direction and die if its length is > 4 units. this is because you press keys
-faster than the refresh rate of the screen(movement speed of the snake). This will be taken care of in the future updates.
-<---FIXED---> unknown bugs exist but the code still runs flawlessly.
+for DFS AI:
+when snake length is 1, it disobeys direction rules so have to fix that or can initialize snake with length 2
+need to record score for each iteration in a txt, plot graph and analyze the data in MATLAB
 
 Thankyou
