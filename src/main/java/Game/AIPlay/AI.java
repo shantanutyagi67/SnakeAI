@@ -309,8 +309,10 @@ public class AI extends JComponent implements Runnable, KeyListener{
 //    		System.out.println(p1.foody+","+p1.foodx);
     	}
     	//p1.AImove(tmp);
+    	if(tmp+1!=pathI.size()) {
     	p1.x.set(0, pathJ.elementAt(tmp+1));
     	p1.y.set(0, pathI.elementAt(tmp+1));
+    	}
     	tmp++;
     	checkCollision = p1.checkCollision(food);
 		if(p1.x.get(0)==p1.foodx&&p1.y.get(0)==p1.foody) {
@@ -374,7 +376,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(50);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -423,6 +425,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		think = true;
 		p1.dirx.clear();
 		p1.diry.clear();
+		//newGame = true;
 		startTime = System.nanoTime()/1000000000;
 	}
 	public void keyReleased(KeyEvent e) {
