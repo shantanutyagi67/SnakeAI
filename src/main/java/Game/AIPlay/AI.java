@@ -12,6 +12,9 @@ import java.awt.event.KeyListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -367,6 +370,15 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		}
 		else {
 			System.out.println("SCORE: "+score+", TIME: "+time/60+"m "+time%60+"s");
+			try {
+			      File myObj = new File("ScoreData.txt");
+			      myObj.createNewFile();
+			      FileWriter myWriter = new FileWriter(myObj,true);
+			      myWriter.write(score+";"+"\n");
+			      myWriter.close();
+			    } catch (IOException e) {
+			    	e.printStackTrace();
+			      }
 			reset();
 			newGame=false;
 			repaint();
@@ -376,7 +388,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(100);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -425,7 +437,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		think = true;
 		p1.dirx.clear();
 		p1.diry.clear();
-		//newGame = true;
+		newGame = true;
 		startTime = System.nanoTime()/1000000000;
 	}
 	public void keyReleased(KeyEvent e) {
