@@ -1,4 +1,4 @@
-package Game.AIPlay;
+package DFS_AI;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

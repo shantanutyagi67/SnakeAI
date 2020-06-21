@@ -1,4 +1,4 @@
-package Game.SnakeAI;
+package Play;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
