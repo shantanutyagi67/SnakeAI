@@ -10,6 +10,8 @@ Steps:
 7. you can pass through the walls
 8. score and time is displayed on the top and the game mode at the bottom
 9. if you die, the board reets and you need to hit spacebar again to restart the game.
+steps for AI:
+1. same as above but keyboard wont work.
 
 # for developers
 for shortest path DFS AI Algo:

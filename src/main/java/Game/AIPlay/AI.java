@@ -371,7 +371,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		else {
 			System.out.println("SCORE: "+score+", TIME: "+time/60+"m "+time%60+"s");
 			try {
-			      File myObj = new File("ScoreData.txt");
+			      File myObj = new File("MATLAB/ScoreData.txt");
 			      myObj.createNewFile();
 			      FileWriter myWriter = new FileWriter(myObj,true);
 			      myWriter.write(score+";"+"\n");
@@ -380,7 +380,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 			    	e.printStackTrace();
 			      }
 			reset();
-			newGame=false;
+			newGame=true;
 			repaint();
 		}
 		
@@ -388,7 +388,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(10);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
