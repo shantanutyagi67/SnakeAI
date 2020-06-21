@@ -140,15 +140,15 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 			System.out.print("Enter difficulty (easy,medium,hard): ");
 			difficulty = sc.nextLine().toLowerCase();
 			if(difficulty.equals("easy")) {
-				time=150;
+				time=200;
 				break;
 			}
 			else if(difficulty.equals("medium")) {
-				time=100;
+				time=150;
 				break;
 			}
 			else if(difficulty.equals("hard")) {
-				time=50;
+				time=100;
 				break;
 			}
 			}while(true);
@@ -250,7 +250,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 			//System.out.println(itr);
 			itr++;
 		}
-		if(food&&itr==p1.x.size()) {
+		if(food) {//&&itr==p1.x.size()) {
 			p1.x.add(oldfoodx);
 			p1.y.add(oldfoody);
 			food=false;

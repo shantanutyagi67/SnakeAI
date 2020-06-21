@@ -335,7 +335,7 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		if(food) {
 			itr++;
 		}
-		if(food&&itr==p1.x.size()) {
+		if(food) {//&&itr==p1.x.size()) {
 			p1.x.add(oldfoodx);
 			p1.y.add(oldfoody);
 			food=false;

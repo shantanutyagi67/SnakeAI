@@ -14,10 +14,10 @@ steps for AI:
 1. same as above but keyboard wont work.
 
 # for developers
-for shortest path DFS AI Algo:
+for shortest path DFS AI Algo: (only for small board size)
 when snake length is 1, it disobeys direction rules so have to fix that or can initialize snake with length 2
 this path is not necessarily the least distance valid path between the head and food but the shortest path DFS could find.
-
+crash report: AI would crash if it reached a new food before digesting the old food. the length of snake would not increace in sinngleplayer mode. that has been taken care of by instant digestion.
 # next release
 shortest path BFS AI Algo: it will find the actual shortest distance valid path
 
