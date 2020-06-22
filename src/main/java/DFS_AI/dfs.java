@@ -167,9 +167,9 @@ class Player{
 		think=false;
 	}
 }//class over
-public class AI extends JComponent implements Runnable, KeyListener{
+public class dfs extends JComponent implements Runnable, KeyListener{
 	private static final long serialVersionUID = 1L;
-	AI(){
+	dfs(){
 		addKeyListener(this);
 		setFocusable(true);
 	}
@@ -195,26 +195,27 @@ public class AI extends JComponent implements Runnable, KeyListener{
 	static int min = Integer.MAX_VALUE,tmp=0;
 	public static void main(String args[]) {
 		Scanner sc = new Scanner(System.in);
-		do {
-		System.out.print("Enter board size (small,medium,large): ");
-		bSize = sc.nextLine().toLowerCase();
-		if(bSize.equals("small")) {
-			size =10;
-			break;
-		}
-		else if(bSize.equals("medium")) {
-			size =15;
-			break;
-		}
-		else if(bSize.equals("large")) {
-			size =20;
-			break;
-		}
-		}while(true);
+//		do {
+//		System.out.print("Enter board size (small,medium,large): ");
+//		bSize = sc.nextLine().toLowerCase();
+//		if(bSize.equals("small")) {
+//			size =10;
+//			break;
+//		}
+//		else if(bSize.equals("medium")) {
+//			size =15;
+//			break;
+//		}
+//		else if(bSize.equals("large")) {
+//			size =20;
+//			break;
+//		}
+//		}while(true);
+		size=10;
 		sc.close();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(0,0,1000,1000);
-		frame.getContentPane().add(new AI());
+		frame.getContentPane().add(new dfs());
 		frame.getContentPane().setBackground(Color.DARK_GRAY);
 		frame.setVisible(true);
 	}
@@ -404,8 +405,8 @@ public class AI extends JComponent implements Runnable, KeyListener{
 		if (e.getKeyCode()==KeyEvent.VK_P) {
 			if(!paused) {
 				paused = true;
-				olddx = p1.dirx.get(p1.dirx.size());
-				olddy = p1.diry.get(p1.diry.size());
+				olddx = p1.dirx.get(p1.dirx.size()-1);
+				olddy = p1.diry.get(p1.diry.size()-1);
 				p1.direction(0, 0);
 			}
 			else {
