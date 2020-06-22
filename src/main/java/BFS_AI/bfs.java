@@ -82,7 +82,7 @@ class Player{
 	}
 	public boolean checkCollision(boolean food) {
 		int lim = x.size();
-		if(lim<=4) return false;
+		if(lim==1) return false;
 		for(int j=1;j<lim;++j) {
 			if(x.get(0)==x.get(j)&&y.get(0)==y.get(j))
 				return true;
@@ -103,6 +103,22 @@ class Player{
 			currentCellI=queueI.get(0);//setting  current cell 
 			currentCellJ=queueJ.get(0);
 			//solved.get(currentCellI).set(currentCellJ,true);
+			if(currentCellI==foody&&currentCellJ==foodx&&queueI.size()<min) {
+				min = queueI.size();
+				pathI.clear();
+				pathJ.clear();
+				int crawlI = foody;
+				int crawlJ = foodx;
+				pathI.add(foody);
+				pathJ.add(foodx);
+				while(pathI.get(pathI.size()-1)!=y.get(0)||pathJ.get(pathJ.size()-1)!=x.get(0)) {
+					pathI.add(parentI.get(crawlI).get(crawlJ));
+					pathJ.add(parentJ.get(crawlI).get(crawlJ));
+					crawlI = parentI.get(crawlI).get(crawlJ);
+					crawlJ = parentJ.get(crawlI).get(crawlJ);
+					if(crawlI==-1&&crawlJ==-1) break;
+				}
+			}
 			queueI.remove(0);//popping of stack
 			queueJ.remove(0);
 			int cnt =padosiI.get(currentCellI).get(currentCellJ).size();//total neighbours of current cell
@@ -119,55 +135,40 @@ class Player{
 				}
 			}
 
-			if(currentCellI==foody&&currentCellJ==foodx) {//&&queueI.size()<min) {
-				break;
-			}
+			
 //				System.out.println(foody+","+foodx);
 //				System.out.println(pathI);
 //				System.out.println(pathJ);
 			
 		}
-		min = queueI.size();
-		pathI.clear();
-		pathJ.clear();
-		int crawlI = foody;
-		int crawlJ = foodx;
-		pathI.add(foody);
-		pathJ.add(foodx);
-		while(parentI.get(crawlI).get(crawlJ)!=-1||parentJ.get(crawlI).get(crawlJ)!=-1) {
-			pathI.add(parentI.get(crawlI).get(crawlJ));
-			pathJ.add(parentJ.get(crawlI).get(crawlJ));
-			crawlI = parentI.get(crawlI).get(crawlJ);
-			crawlJ = parentJ.get(crawlI).get(crawlJ);
-		}
 		Collections.reverse(pathI);
 		Collections.reverse(pathJ);
-//		System.out.println(y.get(0)+","+x.get(0));
-//		System.out.println(foody+","+foodx);
-//		System.out.println(pathI);
-//		System.out.println(pathJ);
+		System.out.println(y.get(0)+","+x.get(0));
+		System.out.println(foody+","+foodx);
+		System.out.println(pathI);
+		System.out.println(pathJ);
 		//not needed
 		//only needed when move method is to be called
 		//but better approach was found out
-		int controlI = y.get(0) - pathI.get(1);
-		if(controlI==9) controlI=1;
-		if(controlI==-9) controlI=-1;
-		int controlJ = x.get(0) - pathJ.get(1);
-		if(controlJ==9) controlJ=1;
-		if(controlJ==-9) controlJ=-1;
-		//System.out.println(controlI+","+controlJ);
-		if(controlI==0 && controlJ==1) {//move right
-			direction(1,0);
-		}
-		else if(controlI==0 && controlJ==-1) {//move left
-			direction(-1,0);
-		}
-		else if(controlI==-1 && controlJ==0) {//move up
-			direction(0,-1);
-		}
-		else if(controlI==1 && controlJ==0) {//move down
-			direction(0,1);
-		}
+//		int controlI = y.get(0) - pathI.get(1);
+//		if(controlI==9) controlI=1;
+//		if(controlI==-9) controlI=-1;
+//		int controlJ = x.get(0) - pathJ.get(1);
+//		if(controlJ==9) controlJ=1;
+//		if(controlJ==-9) controlJ=-1;
+//		//System.out.println(controlI+","+controlJ);
+//		if(controlI==0 && controlJ==1) {//move right
+//			direction(1,0);
+//		}
+//		else if(controlI==0 && controlJ==-1) {//move left
+//			direction(-1,0);
+//		}
+//		else if(controlI==-1 && controlJ==0) {//move up
+//			direction(0,-1);
+//		}
+//		else if(controlI==1 && controlJ==0) {//move down
+//			direction(0,1);
+//		}
 		think=false;
 	}
 }//class over
@@ -407,7 +408,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(350);
+			Thread.sleep(80);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
