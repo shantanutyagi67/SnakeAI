@@ -61,12 +61,12 @@ class Player{
 		}
 	}
 	void AImove(int tmp) {
-		x.set(0,x.get(0)+dirx.get(0));
+		x.set(0,x.get(0)+dirx.get(tmp));
 		if(x.get(0)<0)
 			x.set(0, size-1);
 		else
 			x.set(0, x.get(0)%size);
-		y.set(0,y.get(0)+diry.get(0));
+		y.set(0,y.get(0)+diry.get(tmp));
 		if(y.get(0)<0)
 			y.set(0, size-1);
 		else
@@ -91,8 +91,6 @@ class Player{
 	}
 	public void AIthink(int min, Vector<Vector<Integer>> maze, Vector<Vector<Boolean>> visited, int currentCellI, int currentCellJ, Vector<Vector<Vector<Integer>>> padosiI,Vector<Vector<Vector<Integer>>> padosiJ,Vector<Integer> queueI, Vector<Integer> queueJ, Vector<Integer> pathI, Vector<Integer> pathJ, boolean think, Vector<Vector<Integer>> parentI, Vector<Vector<Integer>> parentJ, Vector<Vector<Integer>> depth) {
 		// ALGO USED: BFS
-//		for(int i=0;i<size;i++)
-//		System.out.println(maze.get(i));
 		currentCellI = y.get(0);
 		currentCellJ = x.get(0);
 		visited.get(currentCellI).set(currentCellJ,true);//set initial cell as visited
@@ -114,9 +112,9 @@ class Player{
 				while(pathI.get(pathI.size()-1)!=y.get(0)||pathJ.get(pathJ.size()-1)!=x.get(0)) {
 					pathI.add(parentI.get(crawlI).get(crawlJ));
 					pathJ.add(parentJ.get(crawlI).get(crawlJ));
+					if(crawlI==-1&&crawlJ==-1) break;
 					crawlI = parentI.get(crawlI).get(crawlJ);
 					crawlJ = parentJ.get(crawlI).get(crawlJ);
-					if(crawlI==-1&&crawlJ==-1) break;
 				}
 			}
 			queueI.remove(0);//popping of stack
@@ -134,8 +132,6 @@ class Player{
 					queueJ.add(padosiJ.get(currentCellI).get(currentCellJ).get(cnt));
 				}
 			}
-
-			
 //				System.out.println(foody+","+foodx);
 //				System.out.println(pathI);
 //				System.out.println(pathJ);
@@ -150,26 +146,24 @@ class Player{
 		//not needed
 		//only needed when move method is to be called
 		//but better approach was found out
-//		int controlI = y.get(0) - pathI.get(1);
-//		if(controlI==9) controlI=1;
-//		if(controlI==-9) controlI=-1;
-//		int controlJ = x.get(0) - pathJ.get(1);
-//		if(controlJ==9) controlJ=1;
-//		if(controlJ==-9) controlJ=-1;
-//		//System.out.println(controlI+","+controlJ);
-//		if(controlI==0 && controlJ==1) {//move right
-//			direction(1,0);
-//		}
-//		else if(controlI==0 && controlJ==-1) {//move left
-//			direction(-1,0);
-//		}
-//		else if(controlI==-1 && controlJ==0) {//move up
-//			direction(0,-1);
-//		}
-//		else if(controlI==1 && controlJ==0) {//move down
-//			direction(0,1);
-//		}
-		think=false;
+		int controlI = y.get(0) - pathI.get(1);
+		if(controlI==9) controlI=1;
+		if(controlI==-9) controlI=-1;
+		int controlJ = x.get(0) - pathJ.get(1);
+		if(controlJ==9) controlJ=1;
+		if(controlJ==-9) controlJ=-1;
+		if(controlI==0 && controlJ==1) {//move right
+			direction(1,0);
+		}
+		else if(controlI==0 && controlJ==-1) {//move left
+			direction(-1,0);
+		}
+		else if(controlI==-1 && controlJ==0) {//move up
+			direction(0,-1);
+		}
+		else if(controlI==1 && controlJ==0) {//move down
+			direction(0,1);
+		}
 	}
 }//class over
 public class bfs extends JComponent implements Runnable, KeyListener{
@@ -182,7 +176,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 	static JFrame frame = new JFrame("Single Player");
 	static JButton butt = new JButton("Foo");
 	static String bSize,difficulty;
-	static int size = 15, time =100;
+	static int size = 10, time =150;
 	Player p1 = new Player(size);
 	static Vector<Vector<Integer>> maze = new Vector<Vector<Integer>>();
 	boolean start = false, end = false, sleeping=false,checkCollision,think=true;
@@ -322,18 +316,14 @@ public class bfs extends JComponent implements Runnable, KeyListener{
     	}
     	if(think) {
     		p1.AIthink(min,maze,visited,currentCellI,currentCellJ,padosiI,padosiJ,queueI,queueJ,pathI,pathJ,think,parentI,parentJ,depth);
-    		think=false;
-//    		System.out.println(pathI);
-//    		System.out.println(pathJ);
-//    		System.out.println(p1.y+","+p1.x);
-//    		System.out.println(p1.foody+","+p1.foodx);
+    		//think=false;
     	}
-    	//p1.AImove(tmp);
-    	if(tmp+1!=pathI.size()) {
-    	p1.x.set(0, pathJ.elementAt(tmp+1));
-    	p1.y.set(0, pathI.elementAt(tmp+1));
-    	}
-    	tmp++;
+    	p1.AImove(tmp);
+//    	if(tmp+1!=pathI.size()) {
+//    	p1.x.set(0, pathJ.elementAt(tmp+1));
+//    	p1.y.set(0, pathI.elementAt(tmp+1));
+//    	}
+    	//tmp++;
     	checkCollision = p1.checkCollision(food);
 		if(p1.x.get(0)==p1.foodx&&p1.y.get(0)==p1.foody) {
 			oldfoodx = p1.foodx;
@@ -368,7 +358,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 		}
 		g2D.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		g2D.setColor(Color.RED);
-		g2D.drawString("MODE: "+bSize+" , "+difficulty, 0,870 );
+		g2D.drawString("MODE: "+size+" , AI", 0,870 );
 		long time = System.nanoTime()/1000000000-startTime;
 		g2D.drawString("SCORE: "+score+", TIME: "+ time/60+"m "+ time%60 + "s", 0,-10 );
 		for(int i=0;i<size;i++) {
@@ -390,15 +380,15 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 		}
 		else {
 			System.out.println("SCORE: "+score+", TIME: "+time/60+"m "+time%60+"s");
-//			try {
-//			      File myObj = new File("MATLAB/ScoreData.txt");
-//			      myObj.createNewFile();
-//			      FileWriter myWriter = new FileWriter(myObj,true);
-//			      myWriter.write(score+";"+"\n");
-//			      myWriter.close();
-//			    } catch (IOException e) {
-//			    	e.printStackTrace();
-//			      }
+			try {
+			      File myObj = new File("MATLAB/ScoreDataBFS.txt");
+			      myObj.createNewFile();
+			      FileWriter myWriter = new FileWriter(myObj,true);
+			      myWriter.write(score+";"+"\n");
+			      myWriter.close();
+			    } catch (IOException e) {
+			    	e.printStackTrace();
+			      }
 			reset();
 			newGame=true;
 			repaint();
@@ -408,7 +398,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(80);
+			Thread.sleep(150);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -1,6 +1,6 @@
 clear all;
 close all;
-fid = fopen('C:\Users\geekSA67\code\SnakeAI\MATLAB\ScoreDataDFS.txt','rt');
+fid = fopen('C:\Users\geekSA67\code\SnakeAI\MATLAB\ScoreDataBFS.txt','rt');
 fx1000='%f';
 C = cell2mat(textscan(fid, fx1000,'Delimiter',';'));
 fclose(fid);
@@ -13,5 +13,5 @@ plot(C(:,1),'r')
 ylabel('Score');
 xlabel('Tests');
 legend('Average','Score');
-savefig('C:\Users\geekSA67\code\SnakeAI\MATLAB\DFS.fig')
-saveas(gcf,'C:\Users\geekSA67\code\SnakeAI\Results\DFS.png')
+savefig('C:\Users\geekSA67\code\SnakeAI\MATLAB\BFS.fig')
+saveas(gcf,'C:\Users\geekSA67\code\SnakeAI\Results\BFS.png')

@@ -89,8 +89,6 @@ class Player{
 		return false;
 	}
 	public void AIthink(int min, Vector<Vector<Integer>> maze, Vector<Vector<Boolean>> visited, int currentCellI, int currentCellJ, Vector<Vector<Vector<Integer>>> padosiI,Vector<Vector<Vector<Integer>>> padosiJ,Vector<Integer> stackI, Vector<Integer> stackJ, Vector<Integer> pathI, Vector<Integer> pathJ, boolean think) { // ALGO USED: DFS
-//		for(int i=0;i<size;i++)
-//		System.out.println(maze.get(i));
 		currentCellI = y.get(0);
 		currentCellJ = x.get(0);
 		visited.get(currentCellI).set(currentCellJ,true);//set initial cell as visited
@@ -123,15 +121,10 @@ class Player{
 				visited.get(padosiI.get(currentCellI).get(currentCellJ).get(rand)).set(padosiJ.get(currentCellI).get(currentCellJ).get(rand),true);
 				stackI.add(padosiI.get(currentCellI).get(currentCellJ).get(rand));
 				stackJ.add(padosiJ.get(currentCellI).get(currentCellJ).get(rand));
-				//solved.get(padosiI.get(currentCellI).get(currentCellJ).get(rand)).set(padosiJ.get(currentCellI).get(currentCellJ).get(rand),true);
 			}
-//			else {
-//				solved.get(currentCellI).set(currentCellJ,false);
-//			}
 			//maze solving logic. solution is equal to the current stack values when we reach the destination node
 			//if we reach destination multiple times then select the shortest path by updating the solution list
 			if(currentCellI==foody&&currentCellJ==foodx&&stackI.size()<min) {
-//				System.out.println(foody+","+foodx);
 				min = stackI.size();
 				pathI.clear();
 				pathJ.clear();
@@ -139,8 +132,6 @@ class Player{
 				pathI.add(foody);
 				pathJ.addAll(stackJ);
 				pathJ.add(foodx);
-//				System.out.println(pathI);
-//				System.out.println(pathJ);
 			}
 		}
 //		System.out.println(pathI);
@@ -151,7 +142,6 @@ class Player{
 		int controlJ = x.get(0) - pathJ.get(1);
 		if(controlJ==9) controlJ=1;
 		if(controlJ==-9) controlJ=-1;
-		//System.out.println(controlI+","+controlJ);
 		if(controlI==0 && controlJ==1) {//move right
 			direction(1,0);
 		}
@@ -164,7 +154,6 @@ class Player{
 		else if(controlI==1 && controlJ==0) {//move down
 			direction(0,1);
 		}
-		think=false;
 	}
 }//class over
 public class dfs extends JComponent implements Runnable, KeyListener{
@@ -177,7 +166,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 	static JFrame frame = new JFrame("Single Player");
 	static JButton butt = new JButton("Foo");
 	static String bSize,difficulty;
-	static int size = 15, time =100;
+	static int size = 10, time =150;
 	Player p1 = new Player(size);
 	static Vector<Vector<Integer>> maze = new Vector<Vector<Integer>>();
 	boolean start = false, end = false, sleeping=false,checkCollision,think=true;
@@ -352,7 +341,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 		}
 		g2D.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		g2D.setColor(Color.RED);
-		g2D.drawString("MODE: "+bSize+" , "+difficulty, 0,870 );
+		g2D.drawString("MODE: "+size+" , AI", 0,870 );
 		long time = System.nanoTime()/1000000000-startTime;
 		g2D.drawString("SCORE: "+score+", TIME: "+ time/60+"m "+ time%60 + "s", 0,-10 );
 		for(int i=0;i<size;i++) {
@@ -372,7 +361,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 		else {
 			System.out.println("SCORE: "+score+", TIME: "+time/60+"m "+time%60+"s");
 			try {
-			      File myObj = new File("MATLAB/ScoreData.txt");
+			      File myObj = new File("MATLAB/ScoreDataDFS.txt");
 			      myObj.createNewFile();
 			      FileWriter myWriter = new FileWriter(myObj,true);
 			      myWriter.write(score+";"+"\n");
