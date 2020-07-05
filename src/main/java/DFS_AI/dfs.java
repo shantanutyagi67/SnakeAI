@@ -371,7 +371,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 			try {
 			      File myObj = new File("MATLAB/ScoreDataDFS.txt");
 			      myObj.createNewFile();
-			      FileWriter myWriter = new FileWriter(myObj,true);
+			      FileWriter myWriter = new FileWriter(myObj,true);// true means don't overwrite
 			      myWriter.write(score+";"+"\n");
 			      myWriter.close();
 			    } catch (IOException e) {
