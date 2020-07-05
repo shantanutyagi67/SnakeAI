@@ -112,7 +112,7 @@ class Player{
 				while(pathI.get(pathI.size()-1)!=y.get(0)||pathJ.get(pathJ.size()-1)!=x.get(0)) {
 					pathI.add(parentI.get(crawlI).get(crawlJ));
 					pathJ.add(parentJ.get(crawlI).get(crawlJ));
-					if(crawlI==-1&&crawlJ==-1) break;
+					if(parentI.get(crawlI).get(crawlJ)==-1&& parentJ.get(crawlI).get(crawlJ)==-1) break;
 					crawlI = parentI.get(crawlI).get(crawlJ);
 					crawlJ = parentJ.get(crawlI).get(crawlJ);
 				}
@@ -146,24 +146,24 @@ class Player{
 		//not needed
 		//only needed when move method is to be called
 		//but better approach was found out
-		int controlI = y.get(0) - pathI.get(1);
-		if(controlI==9) controlI=1;
-		if(controlI==-9) controlI=-1;
-		int controlJ = x.get(0) - pathJ.get(1);
-		if(controlJ==9) controlJ=1;
-		if(controlJ==-9) controlJ=-1;
-		if(controlI==0 && controlJ==1) {//move right
-			direction(1,0);
-		}
-		else if(controlI==0 && controlJ==-1) {//move left
-			direction(-1,0);
-		}
-		else if(controlI==-1 && controlJ==0) {//move up
-			direction(0,-1);
-		}
-		else if(controlI==1 && controlJ==0) {//move down
-			direction(0,1);
-		}
+//		int controlI = y.get(0) - pathI.get(1);
+//		if(controlI==9) controlI=1;
+//		if(controlI==-9) controlI=-1;
+//		int controlJ = x.get(0) - pathJ.get(1);
+//		if(controlJ==9) controlJ=1;
+//		if(controlJ==-9) controlJ=-1;
+//		if(controlI==0 && controlJ==1) {//move right
+//			direction(1,0);
+//		}
+//		else if(controlI==0 && controlJ==-1) {//move left
+//			direction(-1,0);
+//		}
+//		else if(controlI==-1 && controlJ==0) {//move up
+//			direction(0,-1);
+//		}
+//		else if(controlI==1 && controlJ==0) {//move down
+//			direction(0,1);
+//		}
 	}
 }//class over
 public class bfs extends JComponent implements Runnable, KeyListener{
@@ -316,14 +316,14 @@ public class bfs extends JComponent implements Runnable, KeyListener{
     	}
     	if(think) {
     		p1.AIthink(min,maze,visited,currentCellI,currentCellJ,padosiI,padosiJ,queueI,queueJ,pathI,pathJ,think,parentI,parentJ,depth);
-    		//think=false;
+    		think=false;
     	}
-    	p1.AImove(tmp);
-//    	if(tmp+1!=pathI.size()) {
-//    	p1.x.set(0, pathJ.elementAt(tmp+1));
-//    	p1.y.set(0, pathI.elementAt(tmp+1));
-//    	}
-    	//tmp++;
+    	//p1.AImove(tmp);
+    	if(tmp+1!=pathI.size()) {
+    	p1.x.set(0, pathJ.elementAt(tmp+1));
+    	p1.y.set(0, pathI.elementAt(tmp+1));
+    	}
+    	tmp++;
     	checkCollision = p1.checkCollision(food);
 		if(p1.x.get(0)==p1.foodx&&p1.y.get(0)==p1.foody) {
 			oldfoodx = p1.foodx;
@@ -338,16 +338,26 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 			tmp=0;
 			p1.dirx.clear();
 			p1.diry.clear();
-		}
-		if(food) {
-			itr++;
-		}
-		if(food) {//&&itr==p1.x.size()) {
 			p1.x.add(oldfoodx);
 			p1.y.add(oldfoody);
 			food=false;
 			itr=0;
+			pathI.clear();
+			pathJ.clear();
+			min = Integer.MAX_VALUE;
 		}
+//		if(food) {
+//			itr++;
+//		}
+//		if(food) {//&&itr==p1.x.size()) {
+//			p1.x.add(oldfoodx);
+//			p1.y.add(oldfoody);
+//			food=false;
+//			itr=0;
+//			pathI.clear();
+//			pathJ.clear();
+//			min = Integer.MAX_VALUE;
+//		}
 		}
 		g2D.setColor(Color.getHSBColor((float) (340.000/360.000), (float) 1, (float) 0.8));
 		g2D.fill(new Ellipse2D.Double(p1.foodx*thick+thick/4.00,p1.foody*thick+thick/4.00,thick/2.00,thick/2.00));
@@ -394,11 +404,11 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 			repaint();
 		}
 		
-	} else repaint();
+	} else repaint();//for paused
 	}
 	public void run() {
 		try {
-			Thread.sleep(150);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

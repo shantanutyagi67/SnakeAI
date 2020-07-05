@@ -130,30 +130,32 @@ class Player{
 				pathJ.clear();
 				pathI.addAll(stackI);
 				pathI.add(foody);
+				pathI.remove(0);
 				pathJ.addAll(stackJ);
 				pathJ.add(foodx);
+				pathJ.remove(0);
 			}
 		}
 //		System.out.println(pathI);
 //		System.out.println(pathJ);
-		int controlI = y.get(0) - pathI.get(1);
-		if(controlI==9) controlI=1;
-		if(controlI==-9) controlI=-1;
-		int controlJ = x.get(0) - pathJ.get(1);
-		if(controlJ==9) controlJ=1;
-		if(controlJ==-9) controlJ=-1;
-		if(controlI==0 && controlJ==1) {//move right
-			direction(1,0);
-		}
-		else if(controlI==0 && controlJ==-1) {//move left
-			direction(-1,0);
-		}
-		else if(controlI==-1 && controlJ==0) {//move up
-			direction(0,-1);
-		}
-		else if(controlI==1 && controlJ==0) {//move down
-			direction(0,1);
-		}
+//		int controlI = y.get(0) - pathI.get(1);
+//		if(controlI==9) controlI=1;
+//		if(controlI==-9) controlI=-1;
+//		int controlJ = x.get(0) - pathJ.get(1);
+//		if(controlJ==9) controlJ=1;
+//		if(controlJ==-9) controlJ=-1;
+//		if(controlI==0 && controlJ==1) {//move right
+//			direction(1,0);
+//		}
+//		else if(controlI==0 && controlJ==-1) {//move left
+//			direction(-1,0);
+//		}
+//		else if(controlI==-1 && controlJ==0) {//move up
+//			direction(0,-1);
+//		}
+//		else if(controlI==1 && controlJ==0) {//move down
+//			direction(0,1);
+//		}
 	}
 }//class over
 public class dfs extends JComponent implements Runnable, KeyListener{
@@ -302,9 +304,9 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 //    		System.out.println(p1.foody+","+p1.foodx);
     	}
     	//p1.AImove(tmp);
-    	if(tmp+1!=pathI.size()) {
-    	p1.x.set(0, pathJ.elementAt(tmp+1));
-    	p1.y.set(0, pathI.elementAt(tmp+1));
+    	if(tmp!=pathI.size()) {
+    	p1.x.set(0, pathJ.elementAt(tmp));
+    	p1.y.set(0, pathI.elementAt(tmp));
     	}
     	tmp++;
     	checkCollision = p1.checkCollision(food);
@@ -319,18 +321,24 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 			itr=0;
 			think=true;
 			tmp=0;
-			p1.dirx.clear();
-			p1.diry.clear();
-		}
-		if(food) {
-			itr++;
-		}
-		if(food) {//&&itr==p1.x.size()) {
 			p1.x.add(oldfoodx);
 			p1.y.add(oldfoody);
 			food=false;
-			itr=0;
+			p1.dirx.clear();
+			p1.diry.clear();
+			pathI.clear();
+			pathJ.clear();
+			min = Integer.MAX_VALUE;
 		}
+//		if(food) {
+//			itr++;
+//		}
+//		if(food) {//&&itr==p1.x.size()) {
+//			p1.x.add(oldfoodx);
+//			p1.y.add(oldfoody);
+//			food=false;
+//			itr=0;
+//		}
 		}
 		g2D.setColor(Color.getHSBColor((float) (340.000/360.000), (float) 1, (float) 0.8));
 		g2D.fill(new Ellipse2D.Double(p1.foodx*thick+thick/4.00,p1.foody*thick+thick/4.00,thick/2.00,thick/2.00));
@@ -378,7 +386,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(50);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -394,8 +402,8 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 		if (e.getKeyCode()==KeyEvent.VK_P) {
 			if(!paused) {
 				paused = true;
-				olddx = p1.dirx.get(p1.dirx.size()-1);
-				olddy = p1.diry.get(p1.diry.size()-1);
+//				olddx = p1.dirx.get(p1.dirx.size());
+//				olddy = p1.diry.get(p1.diry.size());
 				p1.direction(0, 0);
 			}
 			else {
