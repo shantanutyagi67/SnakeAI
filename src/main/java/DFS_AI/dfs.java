@@ -22,6 +22,7 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import matlabcontrol.*;
 /*
  board size - small=10 medium=15 large=20 (size)
  score tracking - score=snake length -1
@@ -170,6 +171,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 	static String bSize,difficulty;
 	static int size = 10, time =150;
 	Player p1 = new Player(size);
+	//MatlabControl mc = new MatlabControl();
 	static Vector<Vector<Integer>> maze = new Vector<Vector<Integer>>();
 	boolean start = false, end = false, sleeping=false,checkCollision,think=true;
 	boolean food = false,newGame=false, paused=false,allowMove=true, skipMove=false;
@@ -377,6 +379,26 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 			    } catch (IOException e) {
 			    	e.printStackTrace();
 			      }
+//			MatlabProxyFactoryOptions options =
+//	                new MatlabProxyFactoryOptions.Builder()
+//	                    .setUsePreviouslyControlledSession(true)
+//	                    .build();
+//
+//	    MatlabProxyFactory factory = new MatlabProxyFactory(options);
+//	            MatlabProxy proxy = null;
+//				try {
+//					proxy = factory.getProxy();
+//				} catch (MatlabConnectionException e) {
+//					e.printStackTrace();
+//				}
+//				// call user-defined function (must be on the path)
+//	            try {
+//	            	proxy.feval("C:\\Users\\geekSA67\\code\\SnakeAI\\MATLAB\\graphDFS.m");
+//				} catch (MatlabInvocationException e) {
+//					e.printStackTrace();
+//				}
+//	            // close connection
+//	            proxy.disconnect();
 			reset();
 			newGame=true;
 			repaint();
