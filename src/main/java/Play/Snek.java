@@ -239,7 +239,7 @@ public class Snek extends JComponent implements Runnable, KeyListener, ActionLis
 			oldfoody = p1.foody;
 			do {
 			p1.newFood();
-			} while(p1.x.contains(p1.foodx)&&p1.y.contains(p1.foody));
+			} while(maze.get(p1.foody).get(p1.foodx)!=0);
 //			for(int i=0;i<p1.x.size();i++)
 //				System.out.println(p1.x.get(i)+","+p1.y.get(i));
 			score++;

@@ -317,7 +317,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 			oldfoody = p1.foody;
 			do {
 			p1.newFood();
-			} while(p1.x.contains(p1.foodx)&&p1.y.contains(p1.foody));
+			} while(maze.get(p1.foody).get(p1.foodx)!=0);
 			score++;
 			food = true;
 			itr=0;
@@ -364,6 +364,10 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 		}
 		p1.dirx.clear();
 		p1.diry.clear();
+//		pathI.clear();
+//		pathJ.clear();
+//		stackI.clear();
+//		stackJ.clear();
 		run();
 		if(!checkCollision) {
 			repaint();
@@ -393,7 +397,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 //				}
 //				// call user-defined function (must be on the path)
 //	            try {
-//	            	proxy.feval("C:\\Users\\geekSA67\\code\\SnakeAI\\MATLAB\\graphDFS.m");
+//	            	proxy.eval("MATLAB\\graphDFS.m");
 //				} catch (MatlabInvocationException e) {
 //					e.printStackTrace();
 //				}
@@ -408,7 +412,7 @@ public class dfs extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(10);
+			Thread.sleep(2);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

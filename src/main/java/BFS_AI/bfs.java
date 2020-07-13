@@ -139,10 +139,17 @@ class Player{
 		}
 		Collections.reverse(pathI);
 		Collections.reverse(pathJ);
-		System.out.println(y.get(0)+","+x.get(0));
-		System.out.println(foody+","+foodx);
-		System.out.println(pathI);
-		System.out.println(pathJ);
+// hardcoding the solution to diagonal movement by inserting missing piece
+//		for(int i=0;i<pathI.size()-1;i++) {
+//			if( Math.abs(pathI.get(i)-pathI.get(i+1)) + Math.abs(pathJ.get(i)-pathJ.get(i+1)) == 2 ) {
+//				pathI.insertElementAt(pathI.get(i), i+1);
+//				pathJ.insertElementAt(pathJ.get(i), i+1);
+//			}
+//		}
+//		System.out.println(y.get(0)+","+x.get(0));
+//		System.out.println(foody+","+foodx);
+//		System.out.println(pathI);
+//		System.out.println(pathJ);
 		//not needed
 		//only needed when move method is to be called
 		//but better approach was found out
@@ -179,7 +186,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 	static int size = 10, time =150;
 	Player p1 = new Player(size);
 	static Vector<Vector<Integer>> maze = new Vector<Vector<Integer>>();
-	boolean start = false, end = false, sleeping=false,checkCollision,think=true;
+	boolean start = false, end = false, sleeping=false,checkCollision,think=true, noPath=false;
 	boolean food = false,newGame=false, paused=false,allowMove=true, skipMove=false;
 	int itr = 0,score=0;
 	int oldfoodx=0,oldfoody=0,olddx,olddy;
@@ -310,42 +317,49 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 //			}
 //			System.out.println();
 //		}
-    	for(int i=p1.x.size()-1;i>0;i--) {
-    		p1.x.set(i, p1.x.get(i-1));
-    		p1.y.set(i, p1.y.get(i-1));
-    	}
+		//System.out.println("test1");
     	if(think) {
     		p1.AIthink(min,maze,visited,currentCellI,currentCellJ,padosiI,padosiJ,queueI,queueJ,pathI,pathJ,think,parentI,parentJ,depth);
-    		think=false;
+    		//think=false;
     	}
-    	//p1.AImove(tmp);
-    	if(tmp+1!=pathI.size()) {
-    	p1.x.set(0, pathJ.elementAt(tmp+1));
-    	p1.y.set(0, pathI.elementAt(tmp+1));
+    	//System.out.println("test2");
+    	if(pathI.size()>1) {
+    		for(int i=p1.x.size()-1;i>0;i--) {
+    			p1.x.set(i, p1.x.get(i-1));
+    			p1.y.set(i, p1.y.get(i-1));
+    		}
+    		//p1.AImove(tmp);
+    		//if(tmp+1!=pathI.size()) {
+    		p1.x.set(0, pathJ.elementAt(1));
+    		p1.y.set(0, pathI.elementAt(1));
+    		//}
     	}
+    	else noPath = true;
+    	//System.out.println("test3");
     	tmp++;
     	checkCollision = p1.checkCollision(food);
+    	if(noPath) checkCollision=true;
+		//System.out.println("test4");
+		
 		if(p1.x.get(0)==p1.foodx&&p1.y.get(0)==p1.foody) {
-			oldfoodx = p1.foodx;
-			oldfoody = p1.foody;
+			p1.x.add(p1.foodx);
+			p1.y.add(p1.foody);
+			//System.out.println("test4.5");
 			do {
 			p1.newFood();
-			} while(p1.x.contains(p1.foodx)&&p1.y.contains(p1.foody));
+			//System.out.println("newfood: "+p1.foodx+","+p1.foody);
+			} while(maze.get(p1.foody).get(p1.foodx)!=0);
+			//System.out.println("test5");
 			score++;
-			food = true;
 			itr=0;
-			think=true;
+			//think=true;
 			tmp=0;
-			p1.dirx.clear();
-			p1.diry.clear();
-			p1.x.add(oldfoodx);
-			p1.y.add(oldfoody);
+//			p1.dirx.clear();
+//			p1.diry.clear();
 			food=false;
-			itr=0;
-			pathI.clear();
-			pathJ.clear();
-			min = Integer.MAX_VALUE;
+			
 		}
+		
 //		if(food) {
 //			itr++;
 //		}
@@ -371,6 +385,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 		g2D.drawString("MODE: "+size+" , AI", 0,870 );
 		long time = System.nanoTime()/1000000000-startTime;
 		g2D.drawString("SCORE: "+score+", TIME: "+ time/60+"m "+ time%60 + "s", 0,-10 );
+		
 		for(int i=0;i<size;i++) {
 			for(int j=0;j<size;j++) {
 				maze.get(i).set(j,0);
@@ -384,6 +399,12 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 		}
 		p1.dirx.clear();
 		p1.diry.clear();
+		pathI.clear();
+		pathJ.clear();
+		queueI.clear();
+		queueJ.clear();
+		min = Integer.MAX_VALUE;
+		//System.out.println("test6");
 		run();
 		if(!checkCollision) {
 			repaint();
@@ -408,7 +429,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(200);
+			Thread.sleep(1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -461,6 +482,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 		parentI.clear();
 		parentJ.clear();
 		depth.clear();
+		noPath=false;
 		startTime = System.nanoTime()/1000000000;
 	}
 	public void keyReleased(KeyEvent e) {
