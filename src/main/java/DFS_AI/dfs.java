@@ -22,7 +22,7 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import matlabcontrol.*;
+//import matlabcontrol.*;
 /*
  board size - small=10 medium=15 large=20 (size)
  score tracking - score=snake length -1
