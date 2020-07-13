@@ -101,22 +101,7 @@ class Player{
 			currentCellI=queueI.get(0);//setting  current cell 
 			currentCellJ=queueJ.get(0);
 			//solved.get(currentCellI).set(currentCellJ,true);
-			if(currentCellI==foody&&currentCellJ==foodx&&queueI.size()<min) {
-				min = queueI.size();
-				pathI.clear();
-				pathJ.clear();
-				int crawlI = foody;
-				int crawlJ = foodx;
-				pathI.add(foody);
-				pathJ.add(foodx);
-				while(pathI.get(pathI.size()-1)!=y.get(0)||pathJ.get(pathJ.size()-1)!=x.get(0)) {
-					pathI.add(parentI.get(crawlI).get(crawlJ));
-					pathJ.add(parentJ.get(crawlI).get(crawlJ));
-					if(parentI.get(crawlI).get(crawlJ)==-1&& parentJ.get(crawlI).get(crawlJ)==-1) break;
-					crawlI = parentI.get(crawlI).get(crawlJ);
-					crawlJ = parentJ.get(crawlI).get(crawlJ);
-				}
-			}
+			
 			queueI.remove(0);//popping of stack
 			queueJ.remove(0);
 			int cnt =padosiI.get(currentCellI).get(currentCellJ).size();//total neighbours of current cell
@@ -135,7 +120,37 @@ class Player{
 //				System.out.println(foody+","+foodx);
 //				System.out.println(pathI);
 //				System.out.println(pathJ);
-			
+			if(currentCellI==foody&&currentCellJ==foodx&&queueI.size()<min) {
+				min = queueI.size();
+				pathI.clear();
+				pathJ.clear();
+				int crawlI = foody;
+				int crawlJ = foodx;
+				pathI.add(crawlI);
+				pathJ.add(crawlJ);
+				while(pathI.get(pathI.size()-1)!=y.get(0)||pathJ.get(pathJ.size()-1)!=x.get(0)) {
+					pathI.add(parentI.get(crawlI).get(crawlJ));
+					pathJ.add(parentJ.get(crawlI).get(crawlJ));
+					if(parentI.get(crawlI).get(crawlJ)==-1&& parentJ.get(crawlI).get(crawlJ)==-1) break;
+					crawlI = parentI.get(crawlI).get(crawlJ);
+					crawlJ = parentJ.get(crawlI).get(crawlJ);
+				}
+				//hardcoding the solution to diagonal movement by inserting missing piece
+//				for(int i=0;i<pathI.size()-1;i++) {
+//					if( Math.abs(pathI.get(i)-pathI.get(i+1))==1 && Math.abs(pathJ.get(i)-pathJ.get(i+1))==1 ) {
+//						pathI.insertElementAt(pathI.get(i), i+1);
+//						pathJ.insertElementAt(pathJ.get(i), i+1);
+//					}
+//					else if( Math.abs(pathI.get(i)-pathI.get(i+1))==2 || Math.abs(pathI.get(i)-pathI.get(i+1))==8 ) {
+//						pathI.insertElementAt((pathI.get(i)+pathI.get(i+1))/2, i+1);
+//						pathJ.insertElementAt(pathJ.get(i), i+1);
+//					}
+//					else if( Math.abs(pathJ.get(i)-pathJ.get(i+1))==2 || Math.abs(pathJ.get(i)-pathJ.get(i+1))==8 ) {
+//						pathI.insertElementAt((pathJ.get(i)+pathJ.get(i+1))/2, i+1);
+//						pathJ.insertElementAt(pathI.get(i), i+1);
+//					}
+//				}
+			}
 		}
 		Collections.reverse(pathI);
 		Collections.reverse(pathJ);
@@ -429,7 +444,7 @@ public class bfs extends JComponent implements Runnable, KeyListener{
 	}
 	public void run() {
 		try {
-			Thread.sleep(1);
+			Thread.sleep(150);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
